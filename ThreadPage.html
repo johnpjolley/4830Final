@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blog</title>
+        <link rel="stylesheet" type="text/css" href="ThreadPage.css">
+        <script src="js/mustache.js"></script>
+    </head>
+    <body>
+        <div id="display"></div>
+        
+        <script id="template" type="x-tmpl-mustache">
+            <div id="blog">
+                <h1 id="blogTitle">{{blogName}}</h1>
+                <p>{{content}}</p>
+            </div>
+            <br>
+            {{#loggedIn}}
+                <h2 id="comments">Comments</h2>
+                <h4>You are logged in as: {{userName}}</h4>
+                <textarea id="newComment" placeholder="Enter Your Comment Here"></textarea><br>
+                <input type="submit" value="Submit Comment">
+            <br>
+            {{/loggedIn}}
+            {{#comments}}
+                <div class="comment">
+                    <p class="commenterID">{{commenter}}</p>
+                    <p class="date">{{postDate}}</p>
+                    <p class="time">{{postTime}}</p>
+                    <p>{{message}}</p>
+                </div>
+            {{/comments}}
+        </script>
+        
+        <script>
+            //This is dummy data that I put in for demonstration purposes. In reality, the user will select a blog on the main page to view, at which point the user is directed to the ThreadPage where the requisite information (which may be slightly different from what is here) for the selected blog is pulled from the database and displayed.
+            var blogPost = 
+            {
+                loggedIn: true,
+                blogName: "Blog Post 1",
+                content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel bibendum tellus, sit amet convallis lectus. Curabitur mi turpis, suscipit id quam feugiat, porta lobortis arcu. Aenean et varius augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum convallis volutpat magna a imperdiet. Donec felis ante, molestie consectetur accumsan quis, rhoncus eget mi. Maecenas non mauris nisl. Vivamus at pulvinar ante, ac lobortis mi. Aliquam ullamcorper tellus vitae quam lobortis, vitae ultricies risus hendrerit. Sed pharetra ac est suscipit ullamcorper." + "Etiam quis enim vel ipsum suscipit mollis. Nulla laoreet arcu vitae condimentum pellentesque. Cras feugiat orci in tincidunt varius. Mauris quis magn ultricies, porta odio quis, varius arcu. Cras elementum est malesuada tortor posuere fringilla. Cras sollicitudin fringilla condimentum. Aliquam lectus tortor, sagittis vitae semper eget, cursus ut est. Vivamus dolor odio, dignissim in erat nec, rutrum efficitur lectus. Sed in ligula et massa auctor iaculis quis a velit." + "Sed eget egestas quam. Donec a vehicula elit, in auctor neque. Sed ultrices vulputate mauris, at gravida dui malesuada at. Phasellus dapibus efficitur lobortis. Praesent eget sapien ultricies, ultrices mauris vitae, tristique ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris eu erat enim. Fusce vulputate scelerisque risus eu vehicula.",
+                userName: "User X",
+                comments:
+                [
+                    {
+                        commenter: "User 1",
+                        postDate: "November 26, 2017",
+                        postTime: "11:00 PM",
+                        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel bibendum tellus, sit amet convallis lectus. Curabitur mi turpis, suscipit id quam feugiat, porta lobortis arcu. Aenean et varius augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos."
+                    },
+                    {
+                        commenter: "User 2",
+                        postDate: "November 26, 2017",
+                        postTime: "11:10 PM",
+                        message: "Etiam quis enim vel ipsum suscipit mollis. Nulla laoreet arcu vitae condimentum pellentesque. Cras feugiat orci in tincidunt varius. Mauris quis magn ultricies, porta odio quis, varius arcu."
+                    },
+                    {
+                        commenter: "User 3",
+                        postDate: "November 26, 2017",
+                        postTime: "11:20 PM",
+                        message: "Sed eget egestas quam. Donec a vehicula elit, in auctor neque. Sed ultrices vulputate mauris, at gravida dui malesuada at. Phasellus dapibus efficitur lobortis. Praesent eget sapien ultricies, ultrices mauris vitae, tristique ligula. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris eu erat enim. Fusce vulputate scelerisque risus eu vehicula."
+                    },
+                ],
+			 }; 
+             var template = document.getElementById("template");
+             var hash = blogPost;
+        
+             var output = Mustache.render(template.innerHTML, hash);
+        
+             var display = document.getElementById("display");
+             display.innerHTML = output;
+        </script>
+    </body>
+</html>

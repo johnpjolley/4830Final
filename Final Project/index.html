@@ -27,15 +27,24 @@
             var data = snapshot.toJSON();
             $.each(data,function(index,d){
                 $('#blogs').append('<div class="card">'+
-            '<div class="item item-divider">' +d.blogName+
+            '<div class="item item-divider"><a href="ThreadPage.html">' +d.blogName+
+            '</a></div>'+
+            '<div class="item item-text-wrap">'+d.content+
             '</div>'+
-            '</div>')
+            '<div class="item item-divider">'+d.date+
+            '</div></div>')
             })
-        });
+        });    
     </script>
 </head>
 
 <body>
+       
+            <a href="ThreadPage.html">
+                 <script language="text/javascript"> 
+                    var blogname=d.blogName;  
+                    document.write(blogName);
+            </script></a>
     <h3>bar-light</h3>
     <div class="bar bar-header bar-light">
         <h1 class="title">My Blog</h1>
@@ -60,6 +69,7 @@
         </div>
         <div id="blogs"></div>
     </div>
+    
 
 </body>
 

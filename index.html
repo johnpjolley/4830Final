@@ -1,18 +1,55 @@
 <html ng-app="ionicApp">
 
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title>blog</title>
     <link href="styles/app.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        // Initialize Firebase 
+        var config = {
+            apiKey: "AIzaSyByPvg1_iTX2XGxIJ7URgrKKmqCU-pL4lQ",
+            authDomain: "cs4830final-cd342.firebaseapp.com",
+            databaseURL: "https://cs4830final-cd342.firebaseio.com",
+            projectId: "cs4830final-cd342",
+            storageBucket: "cs4830final-cd342.appspot.com",
+            messagingSenderId: "27905852925"
+        };
+        firebase.initializeApp(config);
+
+        var defaultDatabase = firebase.database();
+        console.log("-----------")
+        console.log(defaultDatabase);
+
+
+        firebase.database().ref('blogs/').once('value').then(function (snapshot) {
+            console.log(snapshot.toJSON());
+            var data = snapshot.toJSON();
+            $.each(data,function(index,d){
+                $('#blogs').append('<div class="card">'+
+            '<div class="item item-divider">'+d.blogName+
+            '</div>'+
+            '<div class="item item-text-wrap">'+d.content+
+            '</div>'+
+            '<div class="item item-divider">'+d.date+
+            '</div></div>')
+            })
+        });
+    </script>
 </head>
 
 <body>
 
+
+
     <h3>bar-light</h3>
     <div class="bar bar-header bar-light">
         <h1 class="title">My Blog</h1>
-      
+
     </div>
     <div class="content">
         <div class="card">
@@ -21,16 +58,22 @@
             </div>
             <div class="list list-inset">
                 <label class="item item-input">
-                   
-                <label class="item item-input">
-                    <a href="CreateProfile.html"></a><button class="button button-royal small">
-                        Login
-                    </button>
-                    &nbsp;
-                    <a href=ThreadPage.html><button class="button  button-royal">Create New Thread</button></a>
-                </label>
+
+                    <label class="item item-input">
+                        <a href=CreateProfile.html>
+                            <button class="button button-royal small">
+                                Login
+                            </button>
+                        </a>
+                        &nbsp;
+                        <a href=ThreadPage.html>
+                            <button class="button  button-royal">Create New Thread</button>
+                        </a>
+                    </label>
             </div>
         </div>
+        <div id="blogs"></div>
+
         <div class="list card">
             <div class="item item-avatar">
                 <img src="http://ionicframework.com/img/docs/mcfly.jpg">
@@ -52,21 +95,21 @@
 
             <div class="item item-avatar">
                 <img src="http://ionicframework.com/img/docs/mcfly.jpg">
-                <h2>Tonge</h2>
+                <h2>Tony</h2>
                 <p>
                     This is Comment1
                 </p>
             </div>
             <div class="item item-avatar">
                 <img src="http://ionicframework.com/img/docs/mcfly.jpg">
-                <h2>Tonge</h2>
+                <h2>Tony</h2>
                 <p>
                     This is Comment2
                 </p>
             </div>
             <div class="item item-avatar">
                 <img src="http://ionicframework.com/img/docs/mcfly.jpg">
-                <h2>Tonge</h2>
+                <h2>Tony</h2>
                 <p>
                     This is Comment3
                 </p>
@@ -108,6 +151,7 @@
         </div>
 
     </div>
+
 </body>
 
 

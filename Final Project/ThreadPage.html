@@ -1,0 +1,60 @@
+<!--https://console.firebase.google.com/project/cs4830final-cd342/overview-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blog</title>
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+        <script src="js/mustache.js"></script>
+        
+        
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        
+        <!-- Bootstrap core CSS -->
+        <link href="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/jquery/jquery.min.js"></script>
+        <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="ThreadPage.css">
+    </head>
+    <body onload="getBlog()"> 
+        <div id="display"></div>
+        
+        <script id="template" type="x-tmpl-mustache">
+            <div id="blog">
+                <a class="return" href="index.html">Back</a>
+                <h1 class="blogTitle">{{blogName}}</h1>
+                <p class="posterInfo">Posted by {{blogger}}</p>
+                <p class="posterInfo">Posted on {{date}}</p>
+                <p>{{content}}</p>
+            </div>
+            <br>
+            {{#loggedIn}}
+                <h2 id="comments">Comments</h2>
+                <h4>You are logged in as: {{userName}}</h4>
+                <textarea id="newComment" placeholder="Enter Your Comment Here"></textarea><br>
+                <input type="submit" value="Submit Comment">
+            <br>
+            {{/loggedIn}}
+            {{#comments}}
+                <div class="comment">
+                    <p class="commenterID">{{commenter}}</p>
+                    <p class="date">{{postDate}}</p>
+                    <p class="time">{{postTime}}</p>
+                    <p>{{message}}</p>
+                </div>
+            {{/comments}}
+        </script>
+<!--
+        
+        <script>
+            //This is dummy data that I put in for demonstration purposes. In reality, the user will select a blog on the main page to view, at which point the user is directed to the ThreadPage where the requisite information (which may be slightly different from what is here) for the selected blog is pulled from the database and displayed.
+            
+            
+            
+        </script>
+-->
+        <script src="app.js"></script>
+    </body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blog</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+        <script>
+        // Initialize Firebase
+        var config = 
+        {
+            apiKey: "AIzaSyByPvg1_iTX2XGxIJ7URgrKKmqCU-pL4lQ",
+            authDomain: "cs4830final-cd342.firebaseapp.com",
+            databaseURL: "https://cs4830final-cd342.firebaseio.com",
+            projectId: "cs4830final-cd342",
+            storageBucket: "cs4830final-cd342.appspot.com",
+            messagingSenderId: "27905852925"
+        };
+        firebase.initializeApp(config);
+        </script>
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+        
+        <!-- Bootstrap core CSS -->
+        <link href="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/jquery/jquery.min.js"></script>
+        <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="ThreadPage.css">
+    </head>
+    <body>
+    <div id="stuff">
+        <a class="return" href="index.html">Back</a>
+        <h1 class="blogTitle">Create Blog</h1>
+        <p>Title: <input id="blogTitle" type="text"></p>
+        <p><textarea id="newBlog" placeholder="Put Blog Here"></textarea></p>
+        <button id="submit" class="btn btn-primary">Submit</button>
+    </div>
+        
+        <script>
+            firebase.auth().onAuthStateChanged(firebaseUser =>
+            {
+                if(firebaseUser)
+                {
+                    var blogList = this;
+                    
+                    blogList.theBlogs = (localStorage.getItem('theBlogs') !== null) ? JSON.parse(localStorage.getItem('theBlogs')) : [];
+                    
+                    //Source for getting date: https://docs.microsoft.com/en-us/scripting/javascript/calculating-dates-and-times-javascript
+                    var dt = new Date();  
+                     
+                    var month = dt.getMonth()+1;  
+                    var day = dt.getDate();  
+                    var year = dt.getFullYear();  
+                    var date = (month + '-' + day + '-' + year);
+                    
+                    
+            
+                    var blogs = firebase.database().ref().child('blogs');
+                    
+                    $('#submit').click(function()
+                    {
+                        var newPost = blogs.push(
+                        {
+                            blogName: $('#blogTitle').val(),
+                            content: $('#newBlog').val(),
+                            date: date
+                        });
+                        var postID = newPost.key;
+                        console.log(postID);
+                        var blogIndex = ((localStorage.length) - 1);
+                        var title = document.getElementById('blogTitle');
+                        var content = document.getElementById('newBlog');
+//                        console.dir(localStorage.length);
+//                        console.dir(blogIndex);
+//                        console.dir(title);
+                        blogList.theBlogs.push( {blogNum: blogIndex, key: postID, blogName: title.value, selected: false } );
+                        localStorage.setItem('theBlogs', JSON.stringify(blogList.theBlogs));
+                    });
+                }
+                else
+                {
+                    
+                }
+            });
+        </script>
+    </body>
+</html>

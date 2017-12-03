@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title>blog</title>
-    <link rel="stylesheet" type="text/css" href="app.css">
+    <link rel="stylesheet" type="text/css" href="styles/app.css">
     <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -29,8 +29,6 @@
                 $('#blogs').append('<div class="card">'+
             '<div class="item item-divider"><a href="ThreadPage.html">' +d.blogName+
             '</a></div>'+
-            '<div class="item item-text-wrap">'+d.content+
-            '</div>'+
             '<div class="item item-divider">'+d.date+
             '</div></div>')
             })

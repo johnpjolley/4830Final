@@ -86,26 +86,20 @@
                 if( comments !== null)
                 {
                     var ref = firebase.database().ref('blogs/' +blogKey);
-//                    var size = Object.keys(comments).length;
-//                    console.dir(blogInfo);
-//                    console.log(size);
+                    var commentList = [];
+
                     ref.child('comments').orderByChild('commenter').on('child_added', snap =>
                     {
                         console.log(snap.val());
+                        var commenter = snap.val().commenter;
+                        var postDate = snap.val().postDate;
+                        var message = snap.val().message;
+                        var specificComment = {commenter: commenter, postDate: postDate, message: message};
+//                        JSON.stringify(specificComment);
+                        commentList.push(specificComment);
+                        //console.log(specificComment);
+                        console.log(commentList);
                     });
-                    
-                    
-//                    for (var i = 0; i < size; i++)
-//                    {
-//                        var specificComment = comments[i];
-//                        console.dir(specificComment);
-//                        var commenter = comments.commenter;
-//                        console.log(commenter);
-//                        var postDate = comments.postDate;
-//                        console.log(postDate);
-//                        var message = comments.message;
-//                        console.log(message);
-//                    }  
                 }
                 
                 
@@ -117,7 +111,7 @@
                     date: date,
                     content: content,
                     userName: "User X",
-//                    comments:
+                    comments: commentList
 //                    [
 //                        {
 //                            commenter: "User 1",
@@ -139,7 +133,7 @@
 //                        },
 //                    ],
                 }
-                console.dir(blogPost.comments);
+                //console.dir(blogPost.comments);
                 var template = document.getElementById("template");
                 var hash = blogPost;
         
@@ -188,7 +182,7 @@
                         var loggedIn = true;
                         var userName = "test@test.com";
                         var comments = snapshot.child('comments').val();
-                        console.dir(comments);
+                        //console.dir(comments);
                         assign(loggedIn, blogName, userName, date, content,  comments, blogKey);
                     });
             }

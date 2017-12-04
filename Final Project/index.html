@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html ng-app="ionicApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>blog</title>
+    <link rel="stylesheet" type="text/css" href="app.css">
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        
+    <!-- Bootstrap core CSS -->
+    <link href="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/jquery/jquery.min.js"></script>
+    <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    function getBlogs()
+    {
+        // Initialize Firebase 
+        var config = {
+            apiKey: "AIzaSyByPvg1_iTX2XGxIJ7URgrKKmqCU-pL4lQ",
+            authDomain: "cs4830final-cd342.firebaseapp.com",
+            databaseURL: "https://cs4830final-cd342.firebaseio.com",
+            projectId: "cs4830final-cd342",
+            storageBucket: "cs4830final-cd342.appspot.com",
+            messagingSenderId: "27905852925"
+        };
+        firebase.initializeApp(config);
+        
+        var blogList = this;
+        blogList.theBlogs = [];
+        localStorage.setItem('theBlogs', JSON.stringify(blogList.theBlogs));            
+        blogList.theBlogs = (localStorage.getItem('theBlogs') !== null) ? JSON.parse(localStorage.getItem('theBlogs')) : [];
+        
+        var userRetrievedData = localStorage.getItem('currentUser');
+        var userInfo = JSON.parse(userRetrievedData);
+        var user = userInfo[0].loggedInUser;
+        var displayUser = document.getElementById('user');
+        displayUser.innerHTML = "You are currently logged in as: " +user;
+        
+        var defaultDatabase = firebase.database();
+        console.log("-----------")
+        console.log(defaultDatabase);
+        firebase.database().ref('blogs/').once('value').then(function (snapshot) 
+        {
+            var blogIndex = 0;
+            //console.log(snapshot.toJSON());
+            var data = snapshot.toJSON();
+            $.each(data,function(index,d)
+            {
+                blogList.theBlogs.push( {blogNum: blogIndex, key: index, publisher: d.publisher, selected: false } );
+                localStorage.setItem('theBlogs', JSON.stringify(blogList.theBlogs));
+                $('#blogs').append('<div class="card">'+
+                '<div class="item item-divider"><a onclick="clicked(' +blogIndex+ ')">' +d.blogName+
+                '</a></div>'+
+                '<div class="item item-divider">  Published By ' +d.publisher+ ' on ' +d.date+
+                '</div>'+
+                '</div>');
+                blogIndex = (blogIndex + 1);
+            })
+        });
+    }
+//        href="ThreadPage.html 
+        function clicked(index)
+        {
+            var retrievedData = localStorage.getItem('theBlogs');
+            var blogInfo = JSON.parse(retrievedData);
+            console.dir(blogInfo);
+            
+            var size = blogInfo.length;
+            for (var i = 0; i < size; i++)
+            {
+                if(i == index)
+                {
+                    blogInfo[i].selected = true;
+                    localStorage.setItem('theBlogs', JSON.stringify(blogInfo));   
+                }
+            }
+            window.location.href = 'ThreadPage.html';
+        }
+    </script>
+</head>
+
+<body onload="getBlogs()">
+       
+    <h3>bar-light</h3>
+    <div class="bar bar-header bar-light">
+        <h1 class="title">My Blog</h1>
+
+    </div>
+    <div class="content">
+        <h4 id="user"></h4>
+        <div class="card">
+            <div class="list list-inset">
+
+                    <label class="item item-input">
+                        <a href="CreateProfile.html">
+                            <button class="button button-royal small">
+                                Login/Sign Up
+                            </button>
+                        </a>
+                        &nbsp;
+                        <a href="MakeBlog.html">
+                            <button class="button  button-royal">Create New Blog</button>
+                        </a>
+                    </label>
+            </div>
+        </div>
+        <div id="blogs"></div>
+    </div>
+    
+
+</body>
+
+
+</html>

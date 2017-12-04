@@ -1,0 +1,288 @@
+<!--https://console.firebase.google.com/project/cs4830final-cd342/overview-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blog</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+        <script src="js/mustache.js"></script>
+        <script>
+        // Initialize Firebase
+        var config = 
+        {
+            apiKey: "AIzaSyByPvg1_iTX2XGxIJ7URgrKKmqCU-pL4lQ",
+            authDomain: "cs4830final-cd342.firebaseapp.com",
+            databaseURL: "https://cs4830final-cd342.firebaseio.com",
+            projectId: "cs4830final-cd342",
+            storageBucket: "cs4830final-cd342.appspot.com",
+            messagingSenderId: "27905852925"
+        };
+        firebase.initializeApp(config);
+        </script>
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+        
+        <!-- Bootstrap core CSS -->
+        <link href="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/jquery/jquery.min.js"></script>
+        <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="ThreadPage.css">
+    </head>
+    <body onload="getBlog()">
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+        
+        <script>
+        // Initialize Firebase
+        var config = 
+        {
+            apiKey: "AIzaSyByPvg1_iTX2XGxIJ7URgrKKmqCU-pL4lQ",
+            authDomain: "cs4830final-cd342.firebaseapp.com",
+            databaseURL: "https://cs4830final-cd342.firebaseio.com",
+            projectId: "cs4830final-cd342",
+            storageBucket: "cs4830final-cd342.appspot.com",
+            messagingSenderId: "27905852925"
+        };
+        firebase.initializeApp(config);
+        </script>
+        
+        <div id="display"></div>
+        
+        <script id="template" type="x-tmpl-mustache">
+            <div id="blog">
+                <a class="return" href="index.html">Back</a>
+                <h1 class="blogTitle">{{blogName}}</h1>
+                <p class="posterInfo">Posted by {{blogger}}</p>
+                <p class="posterInfo">Posted on {{date}}</p>
+                <p>{{content}}</p>
+                {{#canDelete}}
+                    <button class="btn btn-danger" onclick="deleteBlog()">Delete Blog</button>
+                {{/canDelete}}
+            </div>
+            <br>
+            {{#loggedIn}}
+                <h2 id="comments">Comments</h2>
+                <h4>You are logged in as: {{userName}}</h4>
+                <textarea id="newComment" placeholder="Enter Your Comment Here"></textarea><br>
+                <button id="submit" class="btn btn-primary" onclick="postComment()">Post Comment</button>
+            <br>
+            {{/loggedIn}}
+            {{#comments}}
+                <div class="comment">
+                    <p class="commenterID">{{commenter}}</p>
+                    <p class="date">{{postDate}}</p>
+                    <p>{{message}}</p>
+                </div>
+            {{/comments}}
+        </script>
+        
+        <script>
+            
+            //This is dummy data that I put in for demonstration purposes. In reality, the user will select a blog on the main page to view, at which point the user is directed to the ThreadPage where the requisite information (which may be slightly different from what is here) for the selected blog is pulled from the database and displayed.
+            function assign(loggedIn, blogName, publisherName, user, date, content,  commentList, blogKey) 
+            {
+                if(publisherName === user)
+                {
+                    var canDelete = true;        
+                }
+                else
+                {
+                    var canDelete = false;        
+                }
+                var blogPost = 
+                {
+                    loggedIn: loggedIn,
+                    canDelete: canDelete,
+                    blogName: blogName,
+                    blogger: publisherName,
+                    date: date,
+                    content: content,
+                    userName: user,
+                    comments: commentList
+                }
+                //console.dir(blogPost.comments);
+                var template = document.getElementById("template");
+                var hash = blogPost;
+        
+                var output = Mustache.render(template.innerHTML, hash);
+        
+                var display = document.getElementById("display");
+                display.innerHTML = output;
+            }
+            function getBlog()
+            {
+                var blogList = this;
+                var retrievedData = localStorage.getItem('theBlogs');
+                var blogInfo = JSON.parse(retrievedData);
+                var size = blogInfo.length;
+//                console.dir(blogInfo);
+//                console.log(size);
+                
+                var userRetrievedData = localStorage.getItem('currentUser');
+                //console.log(retrievedData);
+                var userInfo = JSON.parse(userRetrievedData);
+                var user = userInfo[0].loggedInUser;
+                
+                for (var i = 0; i < size; i++)
+                {
+                    var specificBlog = blogInfo[i];
+                    //console.dir(specificBlog);
+                    var verdict = specificBlog.selected;
+                    //console.log(verdict);
+                    if(verdict === true)
+                    {
+                        var blog = blogInfo[i];
+                        //console.dir(blog);
+                    }
+                }
+                var blogKey = blog.key;
+                //console.dir(blogKey);
+                
+                //Useful Resource: https://firebase.google.com/docs/reference/js/firebase.database.DataSnapshot
+                var ref = firebase.database().ref('blogs/' +blogKey);
+                ref.once("value")
+                    .then(function(snapshot) 
+                    {
+                        var key = snapshot.val();
+                        //console.log(key);
+                        var blogName = snapshot.child("blogName").val();
+                        //console.log(blogName);
+                        var content = snapshot.child("content").val();
+                        //console.log(content);
+                        var date = snapshot.child("date").val();
+                        //console.log(date);
+                        var loggedIn = true;
+                        var publisherName = snapshot.child("publisher").val();
+                        var comments = snapshot.child('comments').val();
+                        var commentList= [];
+                        console.dir(comments);
+                        commentList = getComments(comments, blogKey);
+                        assign(loggedIn, blogName, publisherName, user, date, content,  commentList, blogKey);
+                    });
+            }
+            
+            function postComment()
+            {
+                var blogList = this;
+                var retrievedData = localStorage.getItem('currentUser');
+                console.log(retrievedData);
+                var userInfo = JSON.parse(retrievedData);
+                var user = userInfo[0].loggedInUser;
+                
+                
+                //get the current date
+                var dt = new Date();    
+                var month = dt.getMonth()+1;  
+                var day = dt.getDate();  
+                var year = dt.getFullYear();  
+                var date = (month + '-' + day + '-' + year);
+                
+                //retrieve the key for this blog
+                var blogList = this;
+                var retrievedData = localStorage.getItem('theBlogs');
+                var blogInfo = JSON.parse(retrievedData);
+                var size = blogInfo.length;
+//                console.dir(blogInfo);
+//                console.log(size);
+                
+                for (var i = 0; i < size; i++)
+                {
+                    var specificBlog = blogInfo[i];
+                    //console.dir(specificBlog);
+                    var verdict = specificBlog.selected;
+                    //console.log(verdict);
+                    if(verdict === true)
+                    {
+                        var blog = blogInfo[i];
+                        //console.dir(blog);
+                    }
+                }
+                var blogKey = blog.key;
+                //console.dir(blogKey);
+                
+                var blogs = firebase.database().ref().child('blogs/' +blogKey);
+                var comments = blogs.child('comments');
+
+                var newPost = comments.push(
+                {
+                    commenter: user,
+                    postDate: date,
+                    message: $('#newComment').val()
+                });
+                var postID = newPost.key;
+                //console.log(postID);
+                getBlog();
+            }
+            
+            function getComments(comments, blogKey)
+            {
+                if( comments !== null)
+                {
+                    var commentList = [];
+                    var ref = firebase.database().ref('blogs/' +blogKey); 
+                    
+                    ref.child('comments').orderByChild('commenter').on('child_added', snap =>
+                    {
+                        //console.log(snap.val());
+                        var commenter = snap.val().commenter;
+                        var postDate = snap.val().postDate;
+                        var message = snap.val().message;
+                        var specificComment = {commenter: commenter, postDate: postDate, message: message};
+                        JSON.stringify(specificComment);
+                        commentList.push(specificComment);
+                        //console.log(specificComment);
+                        console.log(commentList);
+                    });
+                }
+                console.log(commentList);
+                return commentList;
+            }
+            
+            function deleteBlog()
+            {
+                var retrievedData = localStorage.getItem('theBlogs');
+                var blogInfo = JSON.parse(retrievedData);
+                var size = blogInfo.length;
+                
+                for (var i = 0; i < size; i++)
+                {
+                    var specificBlog = blogInfo[i];
+                    //console.dir(specificBlog);
+                    var verdict = specificBlog.selected;
+                    //console.log(verdict);
+                    if(verdict === true)
+                    {
+                        var blog = blogInfo[i];
+                        //console.dir(blog);
+                    }
+                }
+                var blogKey = blog.key;
+
+                //get the id of the user who is currently logged in
+                var userRetrievedData = localStorage.getItem('currentUser');
+                //console.log(retrievedData);
+                var userInfo = JSON.parse(userRetrievedData);
+                var user = userInfo[0].loggedInUser;
+                console.log(user);
+
+                //get the id of the person who published the blog
+                var ref = firebase.database().ref('blogs/' +blogKey);
+                ref.once("value")
+                    .then(function(snapshot) 
+                    {
+                        var publisherName = snapshot.child("publisher").val();
+                        console.log(publisherName);
+                        if(user === publisherName)
+                        {     
+                            snapshot.ref.remove();
+                            window.location.href = 'index.html';
+                        }
+                    });
+            }
+        </script>
+    </body>
+</html>

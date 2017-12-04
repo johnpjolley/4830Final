@@ -1,0 +1,40 @@
+#blog
+{
+    border-bottom: 1px solid grey;
+}
+
+.blogTitle
+{
+    text-align: center;
+    font-weight: bold;
+}
+
+.return
+{
+    float: right;
+}
+
+#comments
+{
+    font-weight: bold;
+}
+
+#newComment
+{
+    width: 50%;
+}
+#newBlog
+{
+    width: 50%;
+}
+
+.comment
+{
+    border-top: 1px solid grey;
+}
+
+.commenterID, .date, .time, .posterInfo
+{
+    color: grey;
+    font-size: 8pt;
+}

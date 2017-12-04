@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blog</title>
+<!--        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+        <script>
+        // Initialize Firebase
+        var config = 
+        {
+            apiKey: "AIzaSyByPvg1_iTX2XGxIJ7URgrKKmqCU-pL4lQ",
+            authDomain: "cs4830final-cd342.firebaseapp.com",
+            databaseURL: "https://cs4830final-cd342.firebaseio.com",
+            projectId: "cs4830final-cd342",
+            storageBucket: "cs4830final-cd342.appspot.com",
+            messagingSenderId: "27905852925"
+        };
+        firebase.initializeApp(config);
+</script>
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+        
+        <!-- Bootstrap core CSS -->
+        <link href="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/jquery/jquery.min.js"></script>
+        <script src="startbootstrap-simple-sidebar-gh-pages/startbootstrap-simple-sidebar-gh-pages/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="ThreadPage.css">
+    </head>
+    <body>
+        <h1 class="blogTitle">Create Profile</h1>
+        
+        <div id="profileStuff">
+            <a class="return" href="index.html">Back</a>
+            <h1>Please Login or Create an Account</h1>
+            <input id="txt-email" type="email" placeholder="email"><br>
+            <input id="txt-password" type="password" placeholder="password"><br>
+            <button id="btn-login" class="btn btn-action">Log In</button>
+            <button id="btn-signup" class="btn btn-secondary">Sign Up</button>
+            <button id="btn-logout" class="btn btn-action hide">Log Out</button>
+            <p id="status"></p>
+        </div>
+        <script>
+            var blogList = this;
+            blogList.currentUser = [];
+            localStorage.setItem('currentUser', JSON.stringify(blogList.currentUser));            
+            blogList.currentUser = (localStorage.getItem('currentUser') !== null) ? JSON.parse(localStorage.getItem('currentUser')) : [];
+            
+            var txtEmail = document.getElementById('txt-email');
+            var txtPassword = document.getElementById('txt-password');
+            var btnLogin = document.getElementById('btn-login');
+            var btnSignUp = document.getElementById('btn-signup');
+            var btnLogOut = document.getElementById('btn-logout');
+            
+            btnLogin.addEventListener('click', e =>
+            {
+                var username = txtEmail.value;
+                var password = txtPassword.value;
+                var auth = firebase.auth();
+                var promise = auth.signInWithEmailAndPassword(username, password);
+                promise.catch(e => console.log(e.message));
+                blogList.currentUser.push( {loggedInUser: username} );
+                localStorage.setItem('currentUser', JSON.stringify(blogList.currentUser));
+                
+            });
+            
+            btnSignUp.addEventListener('click', e => 
+            {
+                var username = txtEmail.value;
+                var password = txtPassword.value;
+                var auth = firebase.auth();
+                var promise = auth.createUserWithEmailAndPassword(username, password);
+                promise.catch(e => console.log(e.message));
+                blogList.currentUser.push( {loggedInUser: username} );
+                localStorage.setItem('currentUser', JSON.stringify(blogList.currentUser));
+            });
+            
+            btnLogOut.addEventListener('click', e =>
+            {
+                firebase.auth().signOut();
+                localStorage.removeItem(currentUser);
+                
+            });
+            
+            firebase.auth().onAuthStateChanged(firebaseUser =>
+            {
+                if(firebaseUser)
+                {
+                    console.log('logged in');
+                    btnLogOut.classList.remove('hide');
+                    $('#status').append('<p>You are logged in.</p>');
+                }
+                else
+                {
+                    console.log('not logged in');
+                    btnLogOut.classList.add('hide');
+                    $('#status').append('<p>You are currently not logged in.</p>');
+                }
+            });
+        </script>
+    </body>
+</html>
